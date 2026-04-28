@@ -6,8 +6,8 @@ import { AlertTriangle } from 'lucide-react';
 // Define explicit path permissions based on roles.
 const rolePermissions = {
   ADMIN: null, // null means access to everything
-  MEDICINE_USER: ['/', '/medicines'],
-  BILLING_USER: ['/', '/sales', '/direct-sales', '/credit-bills', '/consolidated-bills']
+  MEDICINE_USER: ['/', '/medicines', '/sales', '/returns', '/return-worklists', '/dispense-worklists', '/pending-prescriptions', '/pending-indents', '/pending-replacement', '/pending-replacement-returns'],
+  BILLING_USER: ['/', '/sales', '/credit-bills', '/consolidated-bills', '/advances', '/clearance', '/credit-returns', '/direct-sales', '/direct-returns']
 };
 
 // Map paths to descriptive module names for the error message
