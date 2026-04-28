@@ -15,8 +15,7 @@ import java.util.Optional;
 @Repository
 public interface MedicineStockRepository extends JpaRepository<MedicineStock, Long> {
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT s FROM MedicineStock s WHERE s.id = :id")
+    @Query(value = "SELECT * FROM medicine_stocks WHERE id = :id AND is_deleted = false FOR UPDATE", nativeQuery = true)
     Optional<MedicineStock> findByIdWithLock(@Param("id") Long id);
 
     List<MedicineStock> findByMedicineNameContainingIgnoreCase(String name);
