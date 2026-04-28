@@ -37,7 +37,14 @@ public class SaleController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PharmacyBill>>> getAllSales() {
-        return ResponseEntity.ok(ApiResponse.success(pharmacyBillRepository.findAll(), "Sales fetched"));
+        try {
+            List<PharmacyBill> sales = pharmacyBillRepository.findAllWithItems();
+            return ResponseEntity.ok(ApiResponse.success(sales, "Sales fetched"));
+        } catch (Exception e) {
+            System.err.println("Error fetching sales: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(ApiResponse.error("Error fetching sales: " + e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")

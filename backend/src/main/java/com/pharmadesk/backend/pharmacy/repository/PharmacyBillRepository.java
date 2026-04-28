@@ -17,7 +17,7 @@ public interface PharmacyBillRepository extends JpaRepository<PharmacyBill, Long
     Optional<PharmacyBill> findByBillNumber(String billNumber);
     
     @Query("SELECT DISTINCT b FROM PharmacyBill b LEFT JOIN FETCH b.items")
-    List<PharmacyBill> findAll();
+    List<PharmacyBill> findAllWithItems();
 
     List<PharmacyBill> findByBillingDateAfter(LocalDateTime date);
     
