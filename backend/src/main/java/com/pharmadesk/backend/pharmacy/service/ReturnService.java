@@ -4,6 +4,7 @@ import com.pharmadesk.backend.model.*;
 import com.pharmadesk.backend.pharmacy.enums.ReturnStatus;
 import com.pharmadesk.backend.pharmacy.exception.InvalidReturnException;
 import com.pharmadesk.backend.pharmacy.exception.ResourceNotFoundException;
+import com.pharmadesk.backend.pharmacy.repository.MedicineRepository;
 import com.pharmadesk.backend.pharmacy.repository.MedicineReturnRepository;
 import com.pharmadesk.backend.pharmacy.repository.MedicineStockRepository;
 import com.pharmadesk.backend.pharmacy.repository.PharmacyBillRepository;
@@ -21,13 +22,16 @@ public class ReturnService {
     private final MedicineReturnRepository returnRepository;
     private final PharmacyBillRepository billRepository;
     private final MedicineStockRepository stockRepository;
+    private final MedicineRepository medicineRepository;
 
     public ReturnService(MedicineReturnRepository returnRepository, 
                          PharmacyBillRepository billRepository, 
-                         MedicineStockRepository stockRepository) {
+                         MedicineStockRepository stockRepository,
+                         MedicineRepository medicineRepository) {
         this.returnRepository = returnRepository;
         this.billRepository = billRepository;
         this.stockRepository = stockRepository;
+        this.medicineRepository = medicineRepository;
     }
 
     @Transactional
@@ -112,6 +116,13 @@ public class ReturnService {
             
             stock.setQuantityAvailable(stock.getQuantityAvailable() + item.getQuantity());
             stockRepository.save(stock);
+
+            // Update Medicine count
+            Medicine medicine = stock.getMedicine();
+            if (medicine != null) {
+                medicine.setCount((medicine.getCount() != null ? medicine.getCount() : 0) + item.getQuantity());
+                medicineRepository.save(medicine);
+            }
         }
 
         medicineReturn.setStatus(ReturnStatus.APPROVED);

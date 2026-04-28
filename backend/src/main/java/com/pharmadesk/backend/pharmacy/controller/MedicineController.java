@@ -45,6 +45,7 @@ public class MedicineController {
             medicine.setGstPercent(medicineData.getGstPercent());
             medicine.setTaxPercentage(medicineData.getTaxPercentage());
             medicine.setReorderLevel(medicineData.getReorderLevel());
+            medicine.setCount(medicineData.getCount());
             Medicine updated = medicineRepository.save(medicine);
             return ResponseEntity.ok(ApiResponse.success(updated, "Medicine updated successfully"));
         }).orElse(ResponseEntity.notFound().build());

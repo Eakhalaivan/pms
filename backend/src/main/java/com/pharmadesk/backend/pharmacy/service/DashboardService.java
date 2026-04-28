@@ -1,5 +1,6 @@
 package com.pharmadesk.backend.pharmacy.service;
 
+import com.pharmadesk.backend.pharmacy.repository.MedicineRepository;
 import com.pharmadesk.backend.pharmacy.repository.MedicineReturnRepository;
 import com.pharmadesk.backend.pharmacy.repository.MedicineStockRepository;
 import com.pharmadesk.backend.pharmacy.repository.PharmacyBillRepository;
@@ -18,13 +19,16 @@ public class DashboardService {
     private final PharmacyBillRepository billRepository;
     private final MedicineReturnRepository returnRepository;
     private final MedicineStockRepository stockRepository;
+    private final MedicineRepository medicineRepository;
 
     public DashboardService(PharmacyBillRepository billRepository, 
                             MedicineReturnRepository returnRepository, 
-                            MedicineStockRepository stockRepository) {
+                            MedicineStockRepository stockRepository,
+                            MedicineRepository medicineRepository) {
         this.billRepository = billRepository;
         this.returnRepository = returnRepository;
         this.stockRepository = stockRepository;
+        this.medicineRepository = medicineRepository;
     }
 
     public Map<String, Object> getDashboardStats() {
@@ -47,9 +51,9 @@ public class DashboardService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         stats.put("todayReturns", todayReturns);
 
-        // Low Stock Count (threshold e.g., 50)
-        long lowStockCount = stockRepository.findAll().stream()
-                .filter(s -> s.getQuantityAvailable() < 50)
+        // Low Stock Count (using the aggregate medicine count vs reorder level)
+        long lowStockCount = medicineRepository.findAll().stream()
+                .filter(m -> m.getCount() != null && m.getReorderLevel() != null && m.getCount() <= m.getReorderLevel())
                 .count();
         stats.put("lowStockCount", lowStockCount);
 

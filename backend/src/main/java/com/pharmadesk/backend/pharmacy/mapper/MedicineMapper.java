@@ -8,6 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface MedicineMapper {
-    MedicineDTO toDto(Medicine medicine);
-    Medicine toEntity(MedicineDTO dto);
+    com.pharmadesk.backend.pharmacy.dto.MedicineDTO toDto(com.pharmadesk.backend.model.Medicine medicine);
+    com.pharmadesk.backend.model.Medicine toEntity(com.pharmadesk.backend.pharmacy.dto.MedicineDTO dto);
 }

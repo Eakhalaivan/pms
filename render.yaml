@@ -1,0 +1,41 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: pharmacy-backend
+    env: java
+    region: singapore # Close to your TiDB region
+    plan: free
+    buildCommand: cd backend && mvn clean install -DskipTests
+    startCommand: cd backend && java -jar target/backend-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/pms?useSSL=true&enabledTLSProtocols=TLSv1.2,TLSv1.3&sslMode=REQUIRED
+      - key: SPRING_DATASOURCE_USERNAME
+        value: 3ZMzEHamXVuJdSt.root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: o2ldKmVs3hjxipyi
+      - key: JWT_SECRET
+        value: a89f67d4e3b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7
+      - key: JAVA_VERSION
+        value: 17
+
+  # Frontend Static Site
+  - type: static
+    name: pharmacy-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: pharmacy-backend
+          type: web
+          property: host
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://pharmacy-backend.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html

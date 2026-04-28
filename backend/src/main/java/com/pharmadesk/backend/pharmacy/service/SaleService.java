@@ -22,15 +22,18 @@ public class SaleService {
     private final PharmacyBillRepository billRepository;
     private final CreditBillRepository creditBillRepository;
     private final PharmacyAdvanceRepository advanceRepository;
+    private final MedicineRepository medicineRepository;
 
     public SaleService(MedicineStockRepository stockRepository, 
                        PharmacyBillRepository billRepository, 
                        CreditBillRepository creditBillRepository, 
-                       PharmacyAdvanceRepository advanceRepository) {
+                       PharmacyAdvanceRepository advanceRepository,
+                       MedicineRepository medicineRepository) {
         this.stockRepository = stockRepository;
         this.billRepository = billRepository;
         this.creditBillRepository = creditBillRepository;
         this.advanceRepository = advanceRepository;
+        this.medicineRepository = medicineRepository;
     }
 
     @Transactional
@@ -57,6 +60,13 @@ public class SaleService {
             // Deduct stock
             stock.setQuantityAvailable(stock.getQuantityAvailable() - itemDto.getQuantity());
             stockRepository.save(stock);
+
+            // Deduct from Medicine count
+            Medicine medicine = stock.getMedicine();
+            if (medicine != null) {
+                medicine.setCount((medicine.getCount() != null ? medicine.getCount() : 0) - itemDto.getQuantity());
+                medicineRepository.save(medicine);
+            }
 
             // Create Bill Item
             PharmacyBillItem billItem = new PharmacyBillItem();
@@ -142,6 +152,13 @@ public class SaleService {
             if (stock != null) {
                 stock.setQuantityAvailable(stock.getQuantityAvailable() + item.getQuantity());
                 stockRepository.save(stock);
+                
+                // Restore Medicine count
+                Medicine medicine = stock.getMedicine();
+                if (medicine != null) {
+                    medicine.setCount((medicine.getCount() != null ? medicine.getCount() : 0) + item.getQuantity());
+                    medicineRepository.save(medicine);
+                }
             }
         }
 

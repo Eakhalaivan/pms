@@ -1,5 +1,6 @@
 package com.pharmadesk.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -34,7 +35,12 @@ public class Medicine extends BaseEntity {
     private BigDecimal gstPercent;
 
     @Column(name = "reorder_level")
+    @JsonProperty("reorderLevel")
     private Integer reorderLevel = 10;
+
+    @Column(name = "count")
+    @JsonProperty("count")
+    private Integer count = 0;
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -54,4 +60,6 @@ public class Medicine extends BaseEntity {
     public void setTaxPercentage(Double taxPercentage) { this.taxPercentage = taxPercentage; }
     public Integer getReorderLevel() { return reorderLevel; }
     public void setReorderLevel(Integer reorderLevel) { this.reorderLevel = reorderLevel; }
+    public Integer getCount() { return count; }
+    public void setCount(Integer count) { this.count = count; }
 }
