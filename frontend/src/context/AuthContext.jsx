@@ -34,8 +34,9 @@ export function AuthProvider({ children }) {
       setUser(userData);
       return true;
     } catch (error) {
+      const message = error.response?.data?.message || 'Login failed. Please check your credentials.';
       console.error('Login failed', error);
-      throw error;
+      throw new Error(message);
     }
   };
 
