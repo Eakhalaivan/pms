@@ -20,7 +20,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
-    # Specify locations explicitly if needed, but defaults to classpath:db/migration
+    repair-on-migrate: true
 
 jwt:
   secret: ${JWT_SECRET}
