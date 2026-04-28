@@ -24,8 +24,8 @@ services:
     name: pharmacy-frontend
     env: static
     plan: free
-    buildCommand: npm install && npm run build
-    publishPath: dist
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
         fromService:
