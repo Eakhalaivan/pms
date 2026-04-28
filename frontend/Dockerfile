@@ -18,7 +18,7 @@ RUN echo 'server { \
         try_files $uri $uri/ /index.html; \
     } \
     location /api/ { \
-        proxy_pass https://pharmacy-backend.onrender.com/api/; \
+        proxy_pass http://pharmacy-backend:8080/api/; \
     } \
 }' > /etc/nginx/conf.d/default.conf
 EXPOSE 80
