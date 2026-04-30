@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Plus, Search, Eye, Printer, Layers, Trash2 } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -13,7 +14,13 @@ const initialMockConsolidated = [
 ];
 
 export default function ConsolidatedBills() {
+  const location = useLocation();
   const [consolidatedList, setConsolidatedList] = useState(initialMockConsolidated);
+
+  useEffect(() => {
+    // Re-fetch logic would go here if not using mocks
+    console.log('Refreshing Consolidated Bills for route:', location.key);
+  }, [location.key]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedConsolidated, setSelectedConsolidated] = useState(null);

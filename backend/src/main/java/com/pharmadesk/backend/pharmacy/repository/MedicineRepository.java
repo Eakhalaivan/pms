@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     List<Medicine> findByNameContainingIgnoreCase(String name);
+    java.util.Optional<Medicine> findByBarcode(String barcode);
 }

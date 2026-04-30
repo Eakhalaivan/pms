@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Eye, Pill, Search } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -9,6 +10,7 @@ import pharmacyService from '../utils/pharmacyService';
 import { toast } from 'react-hot-toast';
 
 export default function PendingPrescriptions() {
+  const location = useLocation();
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
   const [prescriptions, setPrescriptions] = useState([]);
@@ -33,7 +35,7 @@ export default function PendingPrescriptions() {
 
   useEffect(() => {
     fetchPrescriptions();
-  }, []);
+  }, [location.key]);
 
   const fetchPrescriptions = async () => {
     setLoading(true);

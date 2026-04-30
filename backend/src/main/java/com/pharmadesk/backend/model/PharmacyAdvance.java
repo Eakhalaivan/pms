@@ -18,6 +18,12 @@ public class PharmacyAdvance extends BaseEntity {
     @Column(name = "patient_name", nullable = false)
     private String patientName;
 
+    @Column(name = "patient_id")
+    private Long patientId;
+
+    public Long getPatientId() { return patientId; }
+    public void setPatientId(Long patientId) { this.patientId = patientId; }
+
     @Column(nullable = false)
     private BigDecimal amount;
 

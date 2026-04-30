@@ -41,4 +41,22 @@ public abstract class BaseEntity {
 
     public String getCreatedBy() { return createdBy; }
     public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+
+    @PrePersist
+    protected void onPrePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        
+        try {
+            var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && ! (auth instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
+                this.createdBy = auth.getName();
+            }
+        } catch (Exception ignored) {}
+    }
+
+    @PreUpdate
+    protected void onPreUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

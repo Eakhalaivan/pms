@@ -1,0 +1,228 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.pharmadesk:backend >-----------------------
+[INFO] Building backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.5:run (default-cli) > test-compile @ backend >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 16 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ backend ---
+[INFO] skip non existing resourceDirectory /Users/eakhalaivan/PMS/backend/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:4.0.5:run (default-cli) < test-compile @ backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.5:run (default-cli) @ backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.5)
+
+2026-04-30T09:45:04.574+05:30  INFO 38230 --- [backend] [           main] c.pharmadesk.backend.BackendApplication  : Starting BackendApplication using Java 24 with PID 38230 (/Users/eakhalaivan/PMS/backend/target/classes started by eakhalaivan in /Users/eakhalaivan/PMS/backend)
+2026-04-30T09:45:04.576+05:30  INFO 38230 --- [backend] [           main] c.pharmadesk.backend.BackendApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-04-30T09:45:04.939+05:30  INFO 38230 --- [backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-30T09:45:04.985+05:30  INFO 38230 --- [backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 40 ms. Found 15 JPA repository interfaces.
+2026-04-30T09:45:05.342+05:30  INFO 38230 --- [backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-04-30T09:45:05.351+05:30  INFO 38230 --- [backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-30T09:45:05.351+05:30  INFO 38230 --- [backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-04-30T09:45:05.379+05:30  INFO 38230 --- [backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 768 ms
+2026-04-30T09:45:05.604+05:30  INFO 38230 --- [backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-30T09:45:06.415+05:30  INFO 38230 --- [backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@ab4d2ba
+2026-04-30T09:45:06.416+05:30  INFO 38230 --- [backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-30T09:45:07.087+05:30  INFO 38230 --- [backend] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/pms?useSSL=true&enabledTLSProtocols=TLSv1.2,TLSv1.3&sslMode=REQUIRED (MySQL 8.0)
+2026-04-30T09:45:08.275+05:30  INFO 38230 --- [backend] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 16 migrations (execution time 00:00.367s)
+2026-04-30T09:45:08.819+05:30  INFO 38230 --- [backend] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `pms`: 16
+2026-04-30T09:45:08.942+05:30  INFO 38230 --- [backend] [           main] o.f.core.internal.command.DbMigrate      : Schema `pms` is up to date. No migration necessary.
+2026-04-30T09:45:09.338+05:30  INFO 38230 --- [backend] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-30T09:45:09.370+05:30  INFO 38230 --- [backend] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-04-30T09:45:09.620+05:30  INFO 38230 --- [backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-30T09:45:09.830+05:30  INFO 38230 --- [backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/pms?useSSL=true&enabledTLSProtocols=TLSv1.2,TLSv1.3&sslMode=REQUIRED]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.11
+	Default catalog/schema: pms/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-30T09:45:10.418+05:30  INFO 38230 --- [backend] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-30T09:45:10.887+05:30  INFO 38230 --- [backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-30T09:45:10.971+05:30  INFO 38230 --- [backend] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-30T09:45:11.108+05:30  INFO 38230 --- [backend] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2026-04-30T09:45:12.099+05:30  WARN 38230 --- [backend] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-30T09:45:12.507+05:30  INFO 38230 --- [backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-04-30T09:45:12.511+05:30  INFO 38230 --- [backend] [           main] c.pharmadesk.backend.BackendApplication  : Started BackendApplication in 8.121 seconds (process running for 8.294)
+2026-04-30T09:45:58.388+05:30  INFO 38230 --- [backend] [nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-30T09:45:58.388+05:30  INFO 38230 --- [backend] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-30T09:45:58.395+05:30  INFO 38230 --- [backend] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+JwtUtils: Token missing roles claim or empty roles, treating as invalid.
+JwtAuthFilter: Invalid token received
+JwtUtils: Token missing roles claim or empty roles, treating as invalid.
+JwtAuthFilter: Invalid token received
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtAuthFilter: Invalid token received
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtAuthFilter: Invalid token received
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtAuthFilter: Invalid token received
+JwtAuthFilter: Invalid token received
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtAuthFilter: Invalid token received
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtAuthFilter: Invalid token received
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtAuthFilter: Invalid token received
+JwtUtils: Invalid JWT token: JWT strings must contain exactly 2 period characters. Found: 0
+JwtAuthFilter: Invalid token received
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+2026-04-30T09:48:32.636+05:30  WARN 38230 --- [backend] [nio-8080-exec-7] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-04-30T09:48:32.774+05:30  WARN 38230 --- [backend] [nio-8080-exec-7] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+2026-04-30T09:48:36.748+05:30  WARN 38230 --- [backend] [io-8080-exec-10] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+2026-04-30T09:48:36.884+05:30  WARN 38230 --- [backend] [nio-8080-exec-9] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+2026-04-30T10:04:40.833+05:30  WARN 38230 --- [backend] [nio-8080-exec-9] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+2026-04-30T10:04:40.969+05:30  WARN 38230 --- [backend] [nio-8080-exec-5] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+2026-04-30T10:04:41.625+05:30  WARN 38230 --- [backend] [nio-8080-exec-3] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+2026-04-30T10:04:45.133+05:30  WARN 38230 --- [backend] [nio-8080-exec-2] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]
+JwtAuthFilter: Authenticating user [admin_user] with authorities: [ROLE_SYSTEM_ADMIN]

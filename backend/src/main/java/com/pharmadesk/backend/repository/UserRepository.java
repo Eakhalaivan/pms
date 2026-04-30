@@ -8,5 +8,13 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"roles"})
+    java.util.Optional<User> findByUsername(String username);
+    
+    long countByStatus(String status);
+    
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"roles"})
+    java.util.List<User> findByStatus(String status);
+
+    java.util.List<User> findAllByDeletedFalse();
 }

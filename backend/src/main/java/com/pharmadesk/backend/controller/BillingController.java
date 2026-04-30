@@ -50,7 +50,7 @@ public class BillingController {
     }
 
     @PutMapping("/{id}/cancel")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     public ResponseEntity<PharmacyBill> cancelBill(@PathVariable Long id) {
         return billRepository.findById(id).map(bill -> {
             bill.setStatus("CANCELLED");

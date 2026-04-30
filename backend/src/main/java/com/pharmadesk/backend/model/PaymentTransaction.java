@@ -6,8 +6,13 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "payment_transactions")
+@SQLDelete(sql = "UPDATE payment_transactions SET is_deleted = true WHERE id=?")
+@SQLRestriction("is_deleted=false")
 public class PaymentTransaction extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

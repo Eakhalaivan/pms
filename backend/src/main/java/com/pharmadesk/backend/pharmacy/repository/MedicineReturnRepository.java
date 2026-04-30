@@ -16,4 +16,6 @@ public interface MedicineReturnRepository extends JpaRepository<MedicineReturn, 
     List<MedicineReturn> findByOriginalBillId(Long billId);
 
     List<MedicineReturn> findByReturnDateAfter(LocalDateTime date);
+    List<MedicineReturn> findByReturnDateBetween(LocalDateTime start, LocalDateTime end);
+    long countByStatus(com.pharmadesk.backend.pharmacy.enums.ReturnStatus status);
 }

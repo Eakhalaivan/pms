@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Search, Plus, Eye, Printer, RotateCcw, CheckCircle } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -10,6 +11,7 @@ import pharmacyService from '../utils/pharmacyService';
 import PharmacyInvoice from '../components/pharmacy/PharmacyInvoice';
 
 export default function MedicineReturns() {
+  const location = useLocation();
   const [returnsList, setReturnsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +26,7 @@ export default function MedicineReturns() {
 
   useEffect(() => {
     fetchReturns();
-  }, []);
+  }, [location.key]);
 
   const fetchReturns = async () => {
     setLoading(true);
@@ -308,8 +310,8 @@ export default function MedicineReturns() {
       <AppModal
         isOpen={isInvoiceModalOpen}
         onClose={() => setIsInvoiceModalOpen(false)}
-        maxWidth="sm:max-w-4xl"
-        padding={false}
+        size="xl"
+        title="Tax Invoice"
       >
         <PharmacyInvoice 
           bill={invoiceToView} 

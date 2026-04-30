@@ -20,6 +20,7 @@ public interface PharmacyBillRepository extends JpaRepository<PharmacyBill, Long
     List<PharmacyBill> findAllWithItems();
 
     List<PharmacyBill> findByBillingDateAfter(LocalDateTime date);
+    List<PharmacyBill> findByBillingDateBetween(LocalDateTime start, LocalDateTime end);
     
     // Support for existing methods
     Page<PharmacyBill> findByBillType(String billType, Pageable pageable);
@@ -36,4 +37,17 @@ public interface PharmacyBillRepository extends JpaRepository<PharmacyBill, Long
                                    @Param("fromDate") LocalDateTime fromDate, 
                                    @Param("toDate") LocalDateTime toDate, 
                                    Pageable pageable);
+
+    @Query("SELECT SUM(b.netAmount) FROM PharmacyBill b WHERE b.billingDate BETWEEN :start AND :end AND b.deleted = false")
+    java.math.BigDecimal sumNetAmountByBillingDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT COUNT(b) FROM PharmacyBill b WHERE b.billingDate BETWEEN :start AND :end AND b.deleted = false")
+    long countByBillingDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT COUNT(b) FROM PharmacyBill b WHERE b.billType = 'OTC' AND b.billingDate BETWEEN :start AND :end AND b.deleted = false")
+    long countDirectSalesToday(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query(value = "SELECT DISTINCT b FROM PharmacyBill b LEFT JOIN FETCH b.items WHERE b.deleted = false ORDER BY b.billingDate DESC",
+           countQuery = "SELECT COUNT(b) FROM PharmacyBill b WHERE b.deleted = false")
+    Page<PharmacyBill> findAllWithItemsPaged(Pageable pageable);
 }

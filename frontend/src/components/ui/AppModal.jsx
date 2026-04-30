@@ -9,8 +9,19 @@ export default function AppModal({
   title, 
   children, 
   footer,
-  maxWidth = 'sm:max-w-lg'
+  maxWidth = 'sm:max-w-lg',
+  size = null
 }) {
+  const sizeClasses = {
+    'sm': 'sm:max-w-sm',
+    'md': 'sm:max-w-md',
+    'lg': 'sm:max-w-lg',
+    'xl': 'sm:max-w-5xl',
+    '2xl': 'sm:max-w-7xl',
+    'full': 'sm:max-w-[95vw]'
+  };
+
+  const finalMaxWidth = size ? sizeClasses[size] : maxWidth;
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -39,7 +50,7 @@ export default function AppModal({
             >
               <Dialog.Panel className={cn(
                 "relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full",
-                maxWidth
+                finalMaxWidth
               )}>
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4 bg-gray-50/50">

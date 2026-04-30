@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Eye, CheckCircle, XCircle, Plus, ClipboardList, Trash2, Search, PlusCircle } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -14,7 +15,13 @@ const initialMockReplacements = [
 ];
 
 export default function PendingPharmacyReplacement() {
+  const location = useLocation();
   const [replacements, setReplacements] = useState(initialMockReplacements);
+
+  useEffect(() => {
+    // Re-fetch logic would go here if not using mocks
+    console.log('Refreshing Replacements for route:', location.key);
+  }, [location.key]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

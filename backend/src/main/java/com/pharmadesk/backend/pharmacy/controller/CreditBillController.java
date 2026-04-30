@@ -10,6 +10,7 @@ import com.pharmadesk.backend.pharmacy.repository.CreditBillRepository;
 import com.pharmadesk.backend.pharmacy.repository.PaymentTransactionRepository;
 import com.pharmadesk.backend.pharmacy.repository.PharmacyBillRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,7 @@ public class CreditBillController {
         return ResponseEntity.ok(ApiResponse.success(creditBillRepository.findAll(), "Credit bills fetched"));
     }
 
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN','BILLING_STAFF','SUPERVISOR')")
     @PostMapping("/{id}/payment")
     @Transactional
     public ResponseEntity<ApiResponse<PaymentTransaction>> addPayment(

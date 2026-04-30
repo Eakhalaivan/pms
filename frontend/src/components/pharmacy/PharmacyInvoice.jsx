@@ -16,10 +16,12 @@ export default function PharmacyInvoice({ bill, onClose }) {
     } catch (e) { return 'N/A'; }
   };
 
-  const handlePrint = () => { window.print(); };
+  const handlePrint = () => { 
+    setTimeout(() => window.print(), 300); 
+  };
   const handleDownloadPDF = () => {
     // We use the browser's native print-to-pdf which is the most reliable for preserving CSS layout
-    window.print();
+    setTimeout(() => window.print(), 300);
   };
 
   return (
@@ -216,29 +218,6 @@ export default function PharmacyInvoice({ bill, onClose }) {
 
         </div>
       </div>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          body * { visibility: hidden !important; }
-          #invoice-bill, #invoice-bill * { visibility: visible !important; }
-          #invoice-bill {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            padding: 30px !important;
-            margin: 0 !important;
-            border: none !important;
-            box-shadow: none !important;
-          }
-          .print-hidden { display: none !important; }
-        }
-        @page { size: portrait; margin: 10mm; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-      `}} />
     </div>
   );
 }

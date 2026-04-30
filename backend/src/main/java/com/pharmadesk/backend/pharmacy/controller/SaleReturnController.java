@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/api/pharmacy/returns")
 public class SaleReturnController {
@@ -27,6 +28,7 @@ public class SaleReturnController {
         return ResponseEntity.ok(ApiResponse.success(returnService.getAllReturns(), "All returns fetched"));
     }
 
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN','BILLING_STAFF','SUPERVISOR')")
     @PostMapping("/initiate/{billId}")
     public ResponseEntity<ApiResponse<Void>> initiateReturn(
             @PathVariable Long billId,
@@ -36,12 +38,14 @@ public class SaleReturnController {
         return ResponseEntity.ok(ApiResponse.success(null, "Return initiated successfully"));
     }
 
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @PostMapping("/{id}/approve")
     public ResponseEntity<ApiResponse<Void>> approveReturn(@PathVariable Long id) {
         returnService.approveReturn(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Return approved and stock restored"));
     }
 
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @PostMapping("/{id}/reject")
     public ResponseEntity<ApiResponse<Void>> rejectReturn(@PathVariable Long id) {
         returnService.rejectReturn(id);

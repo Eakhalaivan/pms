@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Search, Plus, Eye, Printer, XCircle, Trash2, PlusCircle, CheckCircle } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -10,6 +11,7 @@ import pharmacyService from '../utils/pharmacyService';
 import PharmacyInvoice from '../components/pharmacy/PharmacyInvoice';
 
 export default function DirectPharmacySales() {
+  const location = useLocation();
   const [salesList, setSalesList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,15 +39,16 @@ export default function DirectPharmacySales() {
 
   useEffect(() => {
     fetchSales();
-  }, []);
+  }, [location.key]);
 
   const fetchSales = async () => {
     setLoading(true);
     try {
       const response = await pharmacyService.getSales();
       if (response && response.success) {
-        // Filter for OTC type sales only
-        const otcSales = (response.data || []).filter(sale => sale.billType === 'OTC');
+        // Extract the array from Spring Data's Page object if present
+        const salesData = response.data?.content || response.data || [];
+        const otcSales = salesData.filter(sale => sale.billType === 'OTC');
         setSalesList(otcSales);
       }
     } catch (error) {
@@ -499,8 +502,8 @@ export default function DirectPharmacySales() {
       <AppModal
         isOpen={isInvoiceModalOpen}
         onClose={() => setIsInvoiceModalOpen(false)}
-        maxWidth="sm:max-w-4xl"
-        padding={false}
+        size="xl"
+        title="Tax Invoice"
       >
         <PharmacyInvoice 
           bill={selectedInvoice} 

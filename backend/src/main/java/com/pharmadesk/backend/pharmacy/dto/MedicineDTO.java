@@ -10,10 +10,10 @@ public class MedicineDTO {
     private String manufacturer;
     private String category;
     private String hsnCode;
-    private Double taxPercentage;
+    private BigDecimal taxPercentage;
     private BigDecimal gstPercent;
     private String unit;
-    private Integer count;
+    private Integer currentStock;
     private Integer reorderLevel;
 
     public Long getId() { return id; }
@@ -28,14 +28,14 @@ public class MedicineDTO {
     public void setCategory(String category) { this.category = category; }
     public String getHsnCode() { return hsnCode; }
     public void setHsnCode(String hsnCode) { this.hsnCode = hsnCode; }
-    public Double getTaxPercentage() { return taxPercentage; }
-    public void setTaxPercentage(Double taxPercentage) { this.taxPercentage = taxPercentage; }
+    public BigDecimal getTaxPercentage() { return taxPercentage; }
+    public void setTaxPercentage(BigDecimal taxPercentage) { this.taxPercentage = taxPercentage; }
     public BigDecimal getGstPercent() { return gstPercent; }
     public void setGstPercent(BigDecimal gstPercent) { this.gstPercent = gstPercent; }
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
-    public Integer getCount() { return count; }
-    public void setCount(Integer count) { this.count = count; }
+    public Integer getCurrentStock() { return currentStock; }
+    public void setCurrentStock(Integer currentStock) { this.currentStock = currentStock; }
     public Integer getReorderLevel() { return reorderLevel; }
     public void setReorderLevel(Integer reorderLevel) { this.reorderLevel = reorderLevel; }
 }

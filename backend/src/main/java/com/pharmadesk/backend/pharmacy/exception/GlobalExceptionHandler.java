@@ -43,6 +43,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(false, ex.getMessage()));
     }
 
+    @ExceptionHandler(ExpiredStockException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredStock(ExpiredStockException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(false, ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
         System.err.println("Unhandled Exception: " + ex.getMessage());

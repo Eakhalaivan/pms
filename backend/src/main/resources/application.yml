@@ -1,26 +1,51 @@
 spring:
   application:
     name: backend
-
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-
   flyway:
     enabled: true
     baseline-on-migrate: true
     repair-on-migrate: true
+  mail:
+    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+cors:
+  allowed-origin: ${CORS_ALLOWED_ORIGIN}
 
 jwt:
   secret: ${JWT_SECRET}
-  expirationMs: 86400000 # 24 hours
+  expirationMs: 86400000
+
+app:
+  url: ${APP_URL:http://localhost:5173}
+  stock-alert:
+    cooldown-hours: ${STOCK_ALERT_COOLDOWN:24}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized

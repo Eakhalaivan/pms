@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Eye, CheckCircle, XCircle } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -9,6 +10,7 @@ import { toast } from 'react-hot-toast';
 import pharmacyService from '../utils/pharmacyService';
 
 export default function ReturnWorklists() {
+  const location = useLocation();
   const [returnRequests, setReturnRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +22,7 @@ export default function ReturnWorklists() {
 
   useEffect(() => {
     fetchPendingReturns();
-  }, []);
+  }, [location.key]);
 
   const fetchPendingReturns = async () => {
     try {

@@ -4,6 +4,7 @@ import com.pharmadesk.backend.pharmacy.repository.MedicineRepository;
 import com.pharmadesk.backend.pharmacy.repository.MedicineReturnRepository;
 import com.pharmadesk.backend.pharmacy.repository.MedicineStockRepository;
 import com.pharmadesk.backend.pharmacy.repository.PharmacyBillRepository;
+import com.pharmadesk.backend.model.MedicineStock;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -51,9 +52,14 @@ public class DashboardService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         stats.put("todayReturns", todayReturns);
 
-        // Low Stock Count (using the aggregate medicine count vs reorder level)
+        // Low Stock Count (medicines where total stock <= reorder level)
         long lowStockCount = medicineRepository.findAll().stream()
-                .filter(m -> m.getCount() != null && m.getReorderLevel() != null && m.getCount() <= m.getReorderLevel())
+                .filter(m -> {
+                    int totalStock = stockRepository.findByMedicineId(m.getId()).stream()
+                            .mapToInt(MedicineStock::getQuantityAvailable)
+                            .sum();
+                    return totalStock <= (m.getReorderLevel() != null ? m.getReorderLevel() : 10);
+                })
                 .count();
         stats.put("lowStockCount", lowStockCount);
 

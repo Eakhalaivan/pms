@@ -116,13 +116,6 @@ public class ReturnService {
             
             stock.setQuantityAvailable(stock.getQuantityAvailable() + item.getQuantity());
             stockRepository.save(stock);
-
-            // Update Medicine count
-            Medicine medicine = stock.getMedicine();
-            if (medicine != null) {
-                medicine.setCount((medicine.getCount() != null ? medicine.getCount() : 0) + item.getQuantity());
-                medicineRepository.save(medicine);
-            }
         }
 
         medicineReturn.setStatus(ReturnStatus.APPROVED);

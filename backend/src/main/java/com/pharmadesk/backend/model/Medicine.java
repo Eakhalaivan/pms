@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -15,8 +17,12 @@ import java.math.BigDecimal;
 @SQLRestriction("is_deleted=false")
 public class Medicine extends BaseEntity {
 
+    @NotBlank(message = "Medicine name is required")
     @Column(nullable = false)
     private String name;
+
+    @Column(unique = true)
+    private String barcode;
 
     @Column(name = "generic_name")
     private String genericName;
@@ -28,22 +34,19 @@ public class Medicine extends BaseEntity {
     @Column(name = "hsn_code")
     private String hsnCode;
 
+    @NotNull(message = "Tax percentage is required")
     @Column(name = "tax_percentage")
-    private Double taxPercentage;
-
-    @Column(name = "gst_percent")
-    private BigDecimal gstPercent;
+    private BigDecimal taxPercentage = BigDecimal.ZERO;
 
     @Column(name = "reorder_level")
     @JsonProperty("reorderLevel")
     private Integer reorderLevel = 10;
 
-    @Column(name = "count")
-    @JsonProperty("count")
-    private Integer count = 0;
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public String getBarcode() { return barcode; }
+    public void setBarcode(String barcode) { this.barcode = barcode; }
     public String getGenericName() { return genericName; }
     public void setGenericName(String genericName) { this.genericName = genericName; }
     public String getManufacturer() { return manufacturer; }
@@ -54,12 +57,8 @@ public class Medicine extends BaseEntity {
     public void setUnit(String unit) { this.unit = unit; }
     public String getHsnCode() { return hsnCode; }
     public void setHsnCode(String hsnCode) { this.hsnCode = hsnCode; }
-    public BigDecimal getGstPercent() { return gstPercent; }
-    public void setGstPercent(BigDecimal gstPercent) { this.gstPercent = gstPercent; }
-    public Double getTaxPercentage() { return taxPercentage; }
-    public void setTaxPercentage(Double taxPercentage) { this.taxPercentage = taxPercentage; }
+    public BigDecimal getTaxPercentage() { return taxPercentage; }
+    public void setTaxPercentage(BigDecimal taxPercentage) { this.taxPercentage = taxPercentage; }
     public Integer getReorderLevel() { return reorderLevel; }
     public void setReorderLevel(Integer reorderLevel) { this.reorderLevel = reorderLevel; }
-    public Integer getCount() { return count; }
-    public void setCount(Integer count) { this.count = count; }
 }

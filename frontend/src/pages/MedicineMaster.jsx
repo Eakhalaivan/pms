@@ -20,15 +20,14 @@ export default function MedicineMaster() {
   // Form State
   const [formData, setFormData] = useState({
     name: '',
+    barcode: '',
     genericName: '',
     manufacturer: '',
     category: 'Tablet',
     unit: 'Strip',
     hsnCode: '',
     taxPercentage: 12.0,
-    gstPercent: 12.0,
-    reorderLevel: 10,
-    count: 0
+    reorderLevel: 10
   });
 
   useEffect(() => {
@@ -88,15 +87,14 @@ export default function MedicineMaster() {
     setSelectedMedicine(null);
     setFormData({
       name: '',
+      barcode: '',
       genericName: '',
       manufacturer: '',
       category: 'Tablet',
       unit: 'Strip',
       hsnCode: '',
       taxPercentage: 12.0,
-      gstPercent: 12.0,
-      reorderLevel: 10,
-      count: 0
+      reorderLevel: 10
     });
     setIsModalOpen(true);
   };
@@ -106,15 +104,14 @@ export default function MedicineMaster() {
     setSelectedMedicine(medicine);
     setFormData({
       name: medicine.name || '',
+      barcode: medicine.barcode || '',
       genericName: medicine.genericName || '',
       manufacturer: medicine.manufacturer || '',
       category: medicine.category || 'Tablet',
       unit: medicine.unit || 'Strip',
       hsnCode: medicine.hsnCode || '',
       taxPercentage: medicine.taxPercentage || 12.0,
-      gstPercent: medicine.gstPercent || 12.0,
-      reorderLevel: medicine.reorderLevel || 10,
-      count: medicine.count || 0
+      reorderLevel: medicine.reorderLevel || 10
     });
     setIsModalOpen(true);
   };
@@ -143,12 +140,12 @@ export default function MedicineMaster() {
     { 
       header: 'Stock Count', 
       render: (row) => (
-        <Badge variant={(row.count ?? 0) <= (row.reorderLevel ?? 0) ? "danger" : "success"}>
-          {row.count ?? 0} {row.unit}
+        <Badge variant={(row.currentStock ?? 0) <= (row.reorderLevel ?? 0) ? "danger" : "success"}>
+          {row.currentStock ?? 0} {row.unit}
         </Badge>
       )
     },
-    { header: 'GST %', render: (row) => `${row.gstPercent || row.taxPercentage}%` },
+    { header: 'GST %', render: (row) => `${row.taxPercentage}%` },
     { header: 'Action', render: (row) => (
       <div className="flex items-center gap-2">
         <button 
@@ -218,6 +215,16 @@ export default function MedicineMaster() {
               />
            </div>
            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Barcode / EAN</label>
+              <input 
+                type="text" 
+                value={formData.barcode}
+                onChange={(e) => setFormData({...formData, barcode: e.target.value})}
+                placeholder="Scan or enter barcode" 
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-primary/20 bg-white" 
+              />
+           </div>
+           <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Generic Name</label>
               <input 
                 type="text" 
@@ -284,13 +291,13 @@ export default function MedicineMaster() {
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">GST %</label>
                 <input 
                   type="number" 
-                  value={formData.gstPercent}
-                  onChange={(e) => setFormData({...formData, gstPercent: parseFloat(e.target.value) || 0})}
+                  value={formData.taxPercentage}
+                  onChange={(e) => setFormData({...formData, taxPercentage: parseFloat(e.target.value) || 0})}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-primary/20 bg-white font-bold" 
                 />
               </div>
            </div>
-           <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Reorder Level</label>
                 <input 
@@ -298,15 +305,6 @@ export default function MedicineMaster() {
                   value={formData.reorderLevel}
                   onChange={(e) => setFormData({...formData, reorderLevel: parseInt(e.target.value) || 0})}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-primary/20 bg-white font-bold" 
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Current Stock Count</label>
-                <input 
-                  type="number" 
-                  value={formData.count}
-                  onChange={(e) => setFormData({...formData, count: parseInt(e.target.value) || 0})}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-primary/20 bg-white font-bold text-primary" 
                 />
               </div>
            </div>
@@ -343,15 +341,19 @@ export default function MedicineMaster() {
                </div>
                <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">HSN & Tax</p>
-                  <p className="text font-bold text-slate-700">{selectedMedicine.hsnCode || 'N/A'} (GST {selectedMedicine.gstPercent || selectedMedicine.taxPercentage}%)</p>
+                  <p className="text font-bold text-slate-700">{selectedMedicine.hsnCode || 'N/A'} (GST {selectedMedicine.taxPercentage}%)</p>
+               </div>
+               <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Barcode</p>
+                  <p className="text font-bold text-slate-700 font-mono tracking-widest">{selectedMedicine.barcode || 'NO BARCODE'}</p>
                </div>
                <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Stock Availability</p>
                   <div className="flex items-center gap-2">
-                     <p className="text-xl font-black text-slate-800">{selectedMedicine.count ?? 0}</p>
+                     <p className="text-xl font-black text-slate-800">{selectedMedicine.currentStock ?? 0}</p>
                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{selectedMedicine.unit}</p>
-                     <Badge variant={(selectedMedicine.count ?? 0) <= (selectedMedicine.reorderLevel ?? 0) ? "danger" : "success"} className="ml-2">
-                        {(selectedMedicine.count ?? 0) <= (selectedMedicine.reorderLevel ?? 0) ? 'Low Stock' : 'In Stock'}
+                     <Badge variant={(selectedMedicine.currentStock ?? 0) <= (selectedMedicine.reorderLevel ?? 0) ? "danger" : "success"} className="ml-2">
+                        {(selectedMedicine.currentStock ?? 0) <= (selectedMedicine.reorderLevel ?? 0) ? 'Low Stock' : 'In Stock'}
                      </Badge>
                   </div>
                </div>

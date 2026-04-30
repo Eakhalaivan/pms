@@ -5,6 +5,7 @@ import com.pharmadesk.backend.pharmacy.dto.SaleRequestDTO;
 import com.pharmadesk.backend.model.*;
 import com.pharmadesk.backend.pharmacy.enums.PaymentMode;
 import com.pharmadesk.backend.pharmacy.enums.PaymentStatus;
+import com.pharmadesk.backend.pharmacy.exception.ExpiredStockException;
 import com.pharmadesk.backend.pharmacy.exception.InsufficientStockException;
 import com.pharmadesk.backend.pharmacy.exception.ResourceNotFoundException;
 import com.pharmadesk.backend.pharmacy.repository.*;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,21 +26,24 @@ public class SaleService {
     private final CreditBillRepository creditBillRepository;
     private final PharmacyAdvanceRepository advanceRepository;
     private final MedicineRepository medicineRepository;
+    private final com.pharmadesk.backend.service.StockAlertService alertService;
 
     public SaleService(MedicineStockRepository stockRepository, 
                        PharmacyBillRepository billRepository, 
                        CreditBillRepository creditBillRepository, 
                        PharmacyAdvanceRepository advanceRepository,
-                       MedicineRepository medicineRepository) {
+                       MedicineRepository medicineRepository,
+                       com.pharmadesk.backend.service.StockAlertService alertService) {
         this.stockRepository = stockRepository;
         this.billRepository = billRepository;
         this.creditBillRepository = creditBillRepository;
         this.advanceRepository = advanceRepository;
         this.medicineRepository = medicineRepository;
+        this.alertService = alertService;
     }
 
     @Transactional
-    public PharmacyBill createSale(SaleRequestDTO request) {
+    public PharmacyBill processSale(SaleRequestDTO request) {
         PharmacyBill bill = new PharmacyBill();
         bill.setBillNumber("BILL-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         bill.setBillingDate(LocalDateTime.now());
@@ -57,16 +63,16 @@ public class SaleService {
                 throw new InsufficientStockException("Insufficient stock for batch: " + stock.getBatchNumber());
             }
 
+            if (stock.getExpiryDate().isBefore(LocalDate.now())) {
+                throw new ExpiredStockException(
+                    "Batch " + stock.getBatchNumber() + " of " + stock.getMedicine().getName()
+                    + " expired on " + stock.getExpiryDate() + ". Cannot dispense expired medicine."
+                );
+            }
+
             // Deduct stock
             stock.setQuantityAvailable(stock.getQuantityAvailable() - itemDto.getQuantity());
             stockRepository.save(stock);
-
-            // Deduct from Medicine count
-            Medicine medicine = stock.getMedicine();
-            if (medicine != null) {
-                medicine.setCount((medicine.getCount() != null ? medicine.getCount() : 0) - itemDto.getQuantity());
-                medicineRepository.save(medicine);
-            }
 
             // Create Bill Item
             PharmacyBillItem billItem = new PharmacyBillItem();
@@ -78,9 +84,9 @@ public class SaleService {
             BigDecimal lineTotal = stock.getSellingRate().multiply(BigDecimal.valueOf(itemDto.getQuantity()));
             subTotal = subTotal.add(lineTotal);
             
-            // Calculate tax (assuming simple calculation for now)
-            double taxRate = stock.getMedicine().getTaxPercentage() != null ? stock.getMedicine().getTaxPercentage() : 0.0;
-            BigDecimal lineTax = lineTotal.multiply(BigDecimal.valueOf(taxRate / 100));
+            // Calculate tax
+            BigDecimal taxPercentage = stock.getMedicine().getTaxPercentage() != null ? stock.getMedicine().getTaxPercentage() : BigDecimal.ZERO;
+            BigDecimal lineTax = lineTotal.multiply(taxPercentage).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
             taxTotal = taxTotal.add(lineTax);
 
             billItem.setTaxAmount(lineTax);
@@ -96,8 +102,11 @@ public class SaleService {
         // Handle Advance adjustment
         BigDecimal paidAmount = request.getAmountPaid();
         if (request.isUseAdvance()) {
-            PharmacyAdvance advance = advanceRepository.findByPatientName(request.getPatientName())
-                    .orElseThrow(() -> new ResourceNotFoundException("No advance found for patient: " + request.getPatientName()));
+            if (request.getPatientId() == null) {
+                throw new IllegalArgumentException("patientId is required when useAdvance=true");
+            }
+            PharmacyAdvance advance = advanceRepository.findByPatientId(request.getPatientId())
+                    .orElseThrow(() -> new ResourceNotFoundException("No advance found for patientId: " + request.getPatientId()));
             
             BigDecimal adjustment = advance.getBalanceAmount().min(netAmount);
             advance.setBalanceAmount(advance.getBalanceAmount().subtract(adjustment));
@@ -138,6 +147,14 @@ public class SaleService {
             creditBillRepository.save(creditBill);
         }
 
+        // Trigger Stock Alerts
+        for (SaleItemDTO itemDto : request.getItems()) {
+            MedicineStock stock = stockRepository.findById(itemDto.getStockId()).orElse(null);
+            if (stock != null && stock.getMedicine() != null) {
+                alertService.checkAndAlert(stock.getMedicine().getId());
+            }
+        }
+
         return savedBill;
     }
 
@@ -153,12 +170,6 @@ public class SaleService {
                 stock.setQuantityAvailable(stock.getQuantityAvailable() + item.getQuantity());
                 stockRepository.save(stock);
                 
-                // Restore Medicine count
-                Medicine medicine = stock.getMedicine();
-                if (medicine != null) {
-                    medicine.setCount((medicine.getCount() != null ? medicine.getCount() : 0) + item.getQuantity());
-                    medicineRepository.save(medicine);
-                }
             }
         }
 

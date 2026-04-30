@@ -3,16 +3,25 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Building2, KeyRound, User as UserIcon, Lock, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { DASHBOARD_ROUTES } from '../config/roles.config';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('password'); // Hardcoded default for demo
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated, activeRole } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/';
+  // Redirect already-authenticated users away from the login page
+  React.useEffect(() => {
+    console.log('LoginPage: Auth state changed', { isAuthenticated, activeRole });
+    if (isAuthenticated && activeRole) {
+      const target = DASHBOARD_ROUTES[activeRole] || '/dashboard/pharmacy';
+      console.log('LoginPage: Already authenticated, redirecting to', target);
+      navigate(target, { replace: true });
+    }
+  }, [isAuthenticated, activeRole, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,15 +33,19 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(username, password);
+      console.log('LoginPage: Login successful, navigating...');
       toast.success('Successfully logged in');
-      navigate(from, { replace: true });
+      // Imperatively navigate right away — don't rely solely on the useEffect
+      // since state updates may already be settled by the time we get here.
+      const storedRole = localStorage.getItem('activeRole');
+      const target = (storedRole && DASHBOARD_ROUTES[storedRole]) || '/dashboard/pharmacy';
+      navigate(target, { replace: true });
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      toast.error(error.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -99,8 +112,6 @@ export default function LoginPage() {
               )}
             </button>
           </div>
-          
-
         </form>
       </div>
     </div>

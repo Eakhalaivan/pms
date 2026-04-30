@@ -15,6 +15,9 @@ export default function PharmacyAdvances() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedAdvance, setSelectedAdvance] = useState(null);
   const [patientName, setPatientName] = useState('');
+  const [patientId, setPatientId] = useState(null);
+  const [patientSearchResults, setPatientSearchResults] = useState([]);
+  const [isSearchingPatient, setIsSearchingPatient] = useState(false);
   const [amount, setAmount] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState({ from: null, to: null });
@@ -46,11 +49,13 @@ export default function PharmacyAdvances() {
       return;
     }
     try {
-      const response = await pharmacyService.addAdvance(patientName, amount);
+      const response = await pharmacyService.addAdvance(patientName, amount, patientId);
       if (response.success) {
         toast.success('Advance collected successfully!');
         setIsModalOpen(false);
         setPatientName('');
+        setPatientId(null);
+        setPatientSearchResults([]);
         setAmount('');
         fetchAdvances();
       }
@@ -144,12 +149,41 @@ export default function PharmacyAdvances() {
             <div className="relative">
               <input 
                 type="text" 
-                placeholder="Enter Patient Name..." 
+                placeholder="Search Patient..." 
                 value={patientName}
-                onChange={(e) => setPatientName(e.target.value)}
+                onChange={(e) => {
+                  setPatientName(e.target.value);
+                  if (e.target.value.length >= 2) {
+                    setIsSearchingPatient(true);
+                    pharmacyService.searchPatients(e.target.value).then(res => {
+                      setPatientSearchResults(res.data || []);
+                      setIsSearchingPatient(false);
+                    });
+                  } else {
+                    setPatientSearchResults([]);
+                  }
+                }}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-primary/20 bg-white font-bold" 
               />
               <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+              {patientSearchResults.length > 0 && (
+                <div className="absolute z-[60] left-0 top-full mt-1 w-full bg-white shadow-2xl border border-blue-100 rounded-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  {patientSearchResults.map(p => (
+                    <div 
+                      key={p.id} 
+                      onClick={() => {
+                        setPatientName(p.name);
+                        setPatientId(p.id);
+                        setPatientSearchResults([]);
+                      }}
+                      className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b last:border-0 transition-all text-sm"
+                    >
+                      <div className="font-bold text-slate-800">{p.name}</div>
+                      <div className="text-[10px] text-slate-500 uppercase tracking-widest">UHID: {p.uhid} | PHONE: {p.phone}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="space-y-1.5">

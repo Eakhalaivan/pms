@@ -1,76 +1,66 @@
-import React, { useEffect, useState } from 'react';
-import { IndianRupee, RotateCcw, Stethoscope, AlertTriangle, Eye, Printer, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { IndianRupee, RotateCcw, Stethoscope, AlertTriangle, Eye, Printer } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, Legend 
 } from 'recharts';
+import { useQuery } from '@tanstack/react-query';
 import KPICard from '../components/ui/KPICard';
 import DataTable from '../components/ui/DataTable';
 import Badge from '../components/ui/Badge';
 import AppModal from '../components/ui/AppModal';
 import PharmacyInvoice from '../components/pharmacy/PharmacyInvoice';
 import pharmacyService from '../utils/pharmacyService';
-import { toast } from 'react-hot-toast';
-
-const salesReturnsData = [
-  { day: 'Mon', sales: 4000, returns: 400 },
-  { day: 'Tue', sales: 3000, returns: 600 },
-  { day: 'Wed', sales: 5000, returns: 200 },
-  { day: 'Thu', sales: 2780, returns: 800 },
-  { day: 'Fri', sales: 8900, returns: 1100 },
-  { day: 'Sat', sales: 6390, returns: 400 },
-  { day: 'Sun', sales: 3490, returns: 300 },
-];
-
-const categoryData = [
-  { name: 'Tablet', value: 450 },
-  { name: 'Syrup', value: 300 },
-  { name: 'Injection', value: 200 },
-  { name: 'Capsule', value: 150 },
-  { name: 'Others', value: 100 },
-];
 
 const COLORS = ['#2563eb', '#16a34a', '#d97706', '#dc2626', '#1e3a8a'];
 
-// Initial state for dynamic data
-const initialStats = { todaySales: 0, todayReturns: 0, lowStockCount: 0 };
-
-// End of initial states
+const DashboardSkeleton = () => (
+  <div className="space-y-8 animate-pulse">
+    <div className="h-8 w-64 bg-slate-200 rounded"></div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[...Array(4)].map((_, i) => <div key={i} className="h-32 bg-slate-200 rounded-2xl"></div>)}
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+      <div className="lg:col-span-6 h-[400px] bg-slate-200 rounded-2xl"></div>
+      <div className="lg:col-span-4 h-[400px] bg-slate-200 rounded-2xl"></div>
+    </div>
+  </div>
+);
 
 export default function PharmacyDashboard() {
-  const [stats, setStats] = useState(initialStats);
-  const [recentBills, setRecentBills] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const statsRes = await pharmacyService.getDashboardStats();
-        if (statsRes && statsRes.success) {
-          setStats(statsRes.data);
-        }
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ['pharmacy-stats'],
+    queryFn: async () => {
+      const res = await pharmacyService.getDashboardStats();
+      return res?.data || { todaySales: 0, todayReturns: 0, lowStockCount: 0, lowStockMedicines: [] };
+    }
+  });
 
-        const activitiesRes = await pharmacyService.getRecentActivities();
-        if (activitiesRes && activitiesRes.success) {
-          // Sort and limit to 5
-          const bills = activitiesRes.data
-            .sort((a, b) => new Date(b.billingDate) - new Date(a.billingDate))
-            .slice(0, 5);
-          setRecentBills(bills);
-        }
-      } catch (error) {
-        console.error('Dashboard Data Error:', error);
-      } finally {
-        setLoading(false);
+  const { data: recentBills, isLoading: activitiesLoading } = useQuery({
+    queryKey: ['pharmacy-recent-bills'],
+    queryFn: async () => {
+      const res = await pharmacyService.getRecentActivities();
+      if (res?.success) {
+        return res.data
+          .sort((a, b) => new Date(b.billingDate) - new Date(a.billingDate))
+          .slice(0, 5);
       }
-    };
-    fetchData();
-  }, []);
+      return [];
+    }
+  });
 
-  if (loading) return <div className="p-8 text-center text-slate-500 font-bold">Initialising Dashboard...</div>;
+  const { data: chartData, isLoading: chartLoading } = useQuery({
+    queryKey: ['pharmacy-charts'],
+    queryFn: async () => {
+      const res = await pharmacyService.getChartData();
+      return res?.data || { salesReturns: [], categories: [] };
+    }
+  });
+
+  if (statsLoading || activitiesLoading || chartLoading) return <DashboardSkeleton />;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -83,7 +73,7 @@ export default function PharmacyDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard 
           title="Today's Sales Amount" 
-          value={`₹ ${stats.todaySales?.toLocaleString() || '0.00'}`} 
+          value={`₹ ${stats?.todaySales?.toLocaleString() || '0.00'}`} 
           icon={IndianRupee} 
           trend="up" 
           subtext="+12.5% from yesterday"
@@ -91,7 +81,7 @@ export default function PharmacyDashboard() {
         />
         <KPICard 
           title="Today's Returns Amount" 
-          value={`₹ ${stats.todayReturns?.toLocaleString() || '0.00'}`} 
+          value={`₹ ${stats?.todayReturns?.toLocaleString() || '0.00'}`} 
           icon={RotateCcw} 
           trend="down" 
           subtext="-5% from yesterday"
@@ -105,7 +95,7 @@ export default function PharmacyDashboard() {
         />
         <KPICard 
           title="Low Stock Medicines" 
-          value={stats.lowStockCount?.toString() || '0'} 
+          value={stats?.lowStockCount?.toString() || '0'} 
           icon={AlertTriangle} 
           className="border-l-4 border-l-warning"
         />
@@ -117,7 +107,7 @@ export default function PharmacyDashboard() {
           <h3 className="font-bold text-lg text-gray-800 mb-6">Sales vs Returns (Last 7 Days)</h3>
           <div className="h-[350px] w-full mt-4 min-w-0">
             <ResponsiveContainer width="100%" height={300} minWidth={100}>
-              <AreaChart data={salesReturnsData}>
+              <AreaChart data={chartData?.salesReturns}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
@@ -148,7 +138,7 @@ export default function PharmacyDashboard() {
             <ResponsiveContainer width="100%" height={300} minWidth={100}>
               <PieChart>
                 <Pie
-                  data={categoryData}
+                  data={chartData?.categories}
                   cx="50%"
                   cy="50%"
                   innerRadius={80}
@@ -156,7 +146,7 @@ export default function PharmacyDashboard() {
                   paddingAngle={8}
                   dataKey="value"
                 >
-                  {categoryData.map((entry, index) => (
+                  {chartData?.categories?.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -176,11 +166,11 @@ export default function PharmacyDashboard() {
             <button className="text-primary text-xs font-bold hover:underline">View All</button>
           </div>
           <DataTable 
-            data={recentBills}
+            data={recentBills || []}
             columns={[
               { header: 'Bill No', accessor: 'billNumber' },
               { header: 'Patient Name', accessor: 'patientName' },
-              { header: 'Amount', render: (row) => `₹ ${row.netAmount.toLocaleString()}` },
+              { header: 'Amount', render: (row) => `₹ ${(row.netAmount || 0).toLocaleString()}` },
               { header: 'Status', render: (row) => (
                 <Badge variant={row.status === 'PAID' || row.status === 'Completed' ? 'success' : 'warning'}>{row.status}</Badge>
               )},
@@ -210,7 +200,7 @@ export default function PharmacyDashboard() {
             <button className="text-danger text-xs font-bold hover:underline">View All Alerts</button>
           </div>
           <DataTable 
-            data={stats.lowStockMedicines || []}
+            data={stats?.lowStockMedicines || []}
             columns={[
               { header: 'Medicine Name', render: (row) => row.medicine?.name },
               { header: 'Batch', accessor: 'batchNumber' },

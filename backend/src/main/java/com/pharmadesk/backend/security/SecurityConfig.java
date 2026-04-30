@@ -22,6 +22,9 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origin}")
+    private String allowedOrigin;
 
     private final JwtAuthenticationFilter jwtAuthFilter;
 
@@ -44,10 +47,49 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/pharmacy/**").authenticated()
-                    .anyRequest().authenticated()
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                })
+            )
+            .authorizeHttpRequests(auth -> auth
+                // Public endpoints
+                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
+
+                // Admin-only endpoints
+                .requestMatchers("/api/auth/users", "/api/auth/users/**").hasAuthority("ROLE_SYSTEM_ADMIN")
+                .requestMatchers("/api/auth/roles", "/api/auth/roles/**").hasAuthority("ROLE_SYSTEM_ADMIN")
+
+                // Pharmacy endpoints
+                .requestMatchers("/api/pharmacy/medicines", "/api/pharmacy/medicines/**").hasAnyAuthority(
+                    "ROLE_SYSTEM_ADMIN", "ROLE_SUPERVISOR",
+                    "ROLE_SENIOR_MEDICAL_STAFF", "ROLE_MEDICAL_STAFF",
+                    "ROLE_PHARMACY_STAFF", "ROLE_STOREKEEPER",
+                    "ROLE_BILLING_STAFF"
+                )
+                .requestMatchers("/api/pharmacy/stocks", "/api/pharmacy/stocks/**").hasAnyAuthority(
+                    "ROLE_SYSTEM_ADMIN", "ROLE_SUPERVISOR",
+                    "ROLE_PHARMACY_STAFF", "ROLE_STOREKEEPER",
+                    "ROLE_SENIOR_MEDICAL_STAFF"
+                )
+                .requestMatchers("/api/pharmacy/sales", "/api/pharmacy/sales/**").hasAnyAuthority(
+                    "ROLE_SYSTEM_ADMIN", "ROLE_SUPERVISOR",
+                    "ROLE_BILLING_STAFF", "ROLE_PHARMACY_STAFF"
+                )
+                .requestMatchers("/api/pharmacy/returns", "/api/pharmacy/returns/**").hasAnyAuthority(
+                    "ROLE_SYSTEM_ADMIN", "ROLE_SUPERVISOR",
+                    "ROLE_BILLING_STAFF", "ROLE_PHARMACY_STAFF",
+                    "ROLE_MEDICAL_STAFF", "ROLE_SENIOR_MEDICAL_STAFF"
+                )
+                .requestMatchers("/api/pharmacy/dashboard", "/api/pharmacy/dashboard/**").authenticated()
+                
+                // Other pharmacy sub-paths (advances, prescriptions, credit-bills, etc.)
+                .requestMatchers("/api/pharmacy/**").authenticated()
+
+                // All other /api/** endpoints
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().authenticated()
             );
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -58,8 +100,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of(allowedOrigin, "http://localhost:5173", "http://127.0.0.1:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Authorization"));

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Search, CreditCard, Eye, Printer, CheckCircle } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -9,6 +10,7 @@ import { toast } from 'react-hot-toast';
 import pharmacyService from '../utils/pharmacyService';
 
 export default function MedicineCreditBills() {
+  const location = useLocation();
   const [creditBillsList, setCreditBillsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +21,7 @@ export default function MedicineCreditBills() {
 
   useEffect(() => {
     fetchCreditBills();
-  }, []);
+  }, [location.key]);
 
   const fetchCreditBills = async () => {
     setLoading(true);

@@ -9,8 +9,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "medicine_returns")
+@SQLDelete(sql = "UPDATE medicine_returns SET is_deleted = true WHERE id=?")
+@SQLRestriction("is_deleted=false")
 public class MedicineReturn extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

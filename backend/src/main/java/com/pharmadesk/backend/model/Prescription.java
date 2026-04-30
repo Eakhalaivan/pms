@@ -6,8 +6,13 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "prescriptions")
+@SQLDelete(sql = "UPDATE prescriptions SET is_deleted = true WHERE id=?")
+@SQLRestriction("is_deleted=false")
 public class Prescription extends BaseEntity {
 
     @Column(name = "patient_name", nullable = false)

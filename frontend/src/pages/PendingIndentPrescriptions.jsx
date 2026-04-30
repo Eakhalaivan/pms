@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Eye, CheckCircle, XCircle, Plus, Send, Search, Trash2, PlusCircle } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -15,7 +16,14 @@ const mockIndents = [
 ];
 
 export default function PendingIndentPrescriptions() {
+  const location = useLocation();
   const [indents, setIndents] = useState(mockIndents);
+
+  useEffect(() => {
+    // Re-fetch logic would go here if not using mocks
+    console.log('Refreshing Indents for route:', location.key);
+  }, [location.key]);
+
   const [isFulfillModalOpen, setIsFulfillModalOpen] = useState(false);
   const [isNewIndentModalOpen, setIsNewIndentModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);

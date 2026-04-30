@@ -4,8 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "medicine_return_items")
+@SQLDelete(sql = "UPDATE medicine_return_items SET is_deleted = true WHERE id=?")
+@SQLRestriction("is_deleted=false")
 public class MedicineReturnItem extends BaseEntity {
 
     @JsonBackReference

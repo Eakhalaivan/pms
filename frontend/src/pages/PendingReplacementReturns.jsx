@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Eye, CheckCircle, XCircle } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -12,6 +13,7 @@ const mockRepReturns = [
 ];
 
 export default function PendingReplacementReturns() {
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -20,6 +22,11 @@ export default function PendingReplacementReturns() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState({ from: null, to: null });
   const [returns, setReturns] = useState(mockRepReturns);
+
+  useEffect(() => {
+    // Re-fetch logic would go here if not using mocks
+    console.log('Refreshing Rep Returns for route:', location.key);
+  }, [location.key]);
 
   const filteredReturns = returns.filter(row => {
     const s = searchTerm.toLowerCase();

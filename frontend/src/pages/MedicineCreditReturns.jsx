@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Search, Plus, Eye, Printer, RotateCcw } from 'lucide-react';
 import ModuleFilterBar from '../components/ui/ModuleFilterBar';
 import DataTable from '../components/ui/DataTable';
@@ -13,7 +14,13 @@ const initialMockCreditReturns = [
 ];
 
 export default function MedicineCreditReturns() {
+  const location = useLocation();
   const [returns, setReturns] = useState(initialMockCreditReturns);
+
+  useEffect(() => {
+    // Re-fetch logic would go here if not using mocks
+    console.log('Refreshing Credit Returns for route:', location.key);
+  }, [location.key]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
