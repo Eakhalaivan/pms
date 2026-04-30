@@ -33,7 +33,7 @@ public class EmailService {
     public void sendLowStockAlert(Medicine medicine, List<String> recipients) {
         try {
             // FIX: Sum current stock across ALL non-deleted batches
-            List<MedicineStock> batches = stockRepository.findByMedicineIdAndIsDeletedFalse(medicine.getId());
+            List<MedicineStock> batches = stockRepository.findByMedicineIdAndDeletedFalse(medicine.getId());
             int totalAvailable = batches.stream().mapToInt(MedicineStock::getQuantityAvailable).sum();
             
             int reorderLevel = medicine.getReorderLevel() != null ? medicine.getReorderLevel() : 0;

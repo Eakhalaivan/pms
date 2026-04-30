@@ -44,7 +44,7 @@ public class StockAlertService {
         if (medicine == null || medicine.getReorderLevel() == null) return;
 
         // Use the updated repository method that filters out deleted batches
-        int totalStock = stockRepository.findByMedicineIdAndIsDeletedFalse(medicineId).stream()
+        int totalStock = stockRepository.findByMedicineIdAndDeletedFalse(medicineId).stream()
                 .mapToInt(MedicineStock::getQuantityAvailable)
                 .sum();
 
