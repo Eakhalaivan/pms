@@ -30,7 +30,7 @@ spring:
             enable: true
 
 cors:
-  allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:5173}
+  allowed-origin: ${CORS_ALLOWED_ORIGIN:https://pms-eta-six.vercel.app}
 
 jwt:
   secret: ${JWT_SECRET}
