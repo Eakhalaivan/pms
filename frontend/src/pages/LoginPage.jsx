@@ -7,7 +7,8 @@ import { DASHBOARD_ROUTES } from '../config/roles.config';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('password'); // Hardcoded default for demo
+  const [password, setPassword] = useState('');
+
   const [loading, setLoading] = useState(false);
   const { login, isAuthenticated, activeRole } = useAuth();
   const navigate = useNavigate();
