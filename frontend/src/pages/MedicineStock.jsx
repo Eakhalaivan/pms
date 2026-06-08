@@ -17,6 +17,8 @@ export default function MedicineStock() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   
   // Form State
   const [formData, setFormData] = useState({
@@ -112,8 +114,13 @@ export default function MedicineStock() {
       s.batchNumber?.toLowerCase().includes(term);
   });
 
+  const paginatedStocks = filteredStocks.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   const columns = [
-    { header: 'S.No', render: (_, i) => i + 1 },
+    { header: 'S.No', render: (_, i) => (currentPage - 1) * pageSize + i + 1 },
     { 
         header: 'Medicine Name', 
         render: (row) => (
@@ -179,7 +186,7 @@ export default function MedicineStock() {
       </div>
 
       <ModuleFilterBar 
-        onSearch={setSearchTerm}
+        onSearch={(val) => { setSearchTerm(val); setCurrentPage(1); }}
         searchValue={searchTerm}
         actions={[
           { label: 'Add Stock Entry', icon: Plus, variant: 'primary', onClick: openAddModal }
@@ -187,8 +194,14 @@ export default function MedicineStock() {
       />
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <DataTable columns={columns} data={filteredStocks} hover striped />
-        <Pagination totalRecords={filteredStocks.length} currentPage={1} pageSize={10} onPageChange={() => {}} onPageSizeChange={() => {}} />
+        <DataTable columns={columns} data={paginatedStocks} hover striped />
+        <Pagination 
+          totalRecords={filteredStocks.length} 
+          currentPage={currentPage} 
+          pageSize={pageSize} 
+          onPageChange={setCurrentPage} 
+          onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }} 
+        />
       </div>
 
       <AppModal 

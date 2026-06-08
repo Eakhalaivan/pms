@@ -38,12 +38,19 @@ public class MedicineController {
 
     @GetMapping("/medicines")
     public ResponseEntity<ApiResponse<List<MedicineDTO>>> getAllMedicines() {
-        List<MedicineDTO> dtos = medicineRepository.findAll().stream()
+        List<Medicine> medicines = medicineRepository.findAll();
+        List<Object[]> stockSummary = stockRepository.getStockQuantitiesGroupByMedicine();
+        java.util.Map<Long, Integer> stockMap = stockSummary.stream()
+                .filter(arr -> arr[0] != null && arr[1] != null)
+                .collect(java.util.stream.Collectors.toMap(
+                        arr -> (Long) arr[0],
+                        arr -> ((Number) arr[1]).intValue()
+                ));
+
+        List<MedicineDTO> dtos = medicines.stream()
                 .map(medicine -> {
                     MedicineDTO dto = medicineMapper.toDto(medicine);
-                    dto.setCurrentStock(stockRepository.findByMedicineId(medicine.getId()).stream()
-                            .mapToInt(MedicineStock::getQuantityAvailable)
-                            .sum());
+                    dto.setCurrentStock(stockMap.getOrDefault(medicine.getId(), 0));
                     return dto;
                 })
                 .toList();
@@ -82,12 +89,24 @@ public class MedicineController {
 
     @GetMapping("/medicines/search")
     public ResponseEntity<List<MedicineDTO>> searchMedicines(@RequestParam String name) {
-        List<MedicineDTO> dtos = medicineRepository.findByNameContainingIgnoreCase(name).stream()
+        List<Medicine> medicines = medicineRepository.findByNameContainingIgnoreCase(name);
+        if (medicines.isEmpty()) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        List<Long> medicineIds = medicines.stream().map(Medicine::getId).toList();
+        List<Object[]> stockSummary = stockRepository.getStockQuantitiesGroupByMedicineIds(medicineIds);
+        java.util.Map<Long, Integer> stockMap = stockSummary.stream()
+                .filter(arr -> arr[0] != null && arr[1] != null)
+                .collect(java.util.stream.Collectors.toMap(
+                        arr -> (Long) arr[0],
+                        arr -> ((Number) arr[1]).intValue()
+                ));
+
+        List<MedicineDTO> dtos = medicines.stream()
                 .map(medicine -> {
                     MedicineDTO dto = medicineMapper.toDto(medicine);
-                    dto.setCurrentStock(stockRepository.findByMedicineId(medicine.getId()).stream()
-                            .mapToInt(MedicineStock::getQuantityAvailable)
-                            .sum());
+                    dto.setCurrentStock(stockMap.getOrDefault(medicine.getId(), 0));
                     return dto;
                 })
                 .toList();
@@ -96,7 +115,7 @@ public class MedicineController {
 
     @GetMapping("/stocks/search")
     public ResponseEntity<List<MedicineStock>> searchStocks(@RequestParam String name) {
-        return ResponseEntity.ok(stockRepository.findByMedicineNameContainingIgnoreCase(name));
+        return ResponseEntity.ok(stockRepository.findByMedicineNameContainingIgnoreCaseWithMedicineAndSupplier(name));
     }
 
     @GetMapping("/stocks/barcode/{barcode}")
@@ -111,7 +130,7 @@ public class MedicineController {
 
     @GetMapping("/stocks")
     public ResponseEntity<ApiResponse<List<MedicineStock>>> getAllStocks() {
-        return ResponseEntity.ok(ApiResponse.success(stockRepository.findAll(), "Stocks fetched successfully"));
+        return ResponseEntity.ok(ApiResponse.success(stockRepository.findAllWithMedicineAndSupplier(), "Stocks fetched successfully"));
     }
 
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN','PHARMACY_STAFF')")

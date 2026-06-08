@@ -16,6 +16,8 @@ export default function MedicineMaster() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   
   // Form State
   const [formData, setFormData] = useState({
@@ -130,8 +132,13 @@ export default function MedicineMaster() {
       m.manufacturer?.toLowerCase().includes(s);
   });
 
+  const paginatedMedicines = filteredMedicines.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   const columns = [
-    { header: 'S.No', render: (_, i) => i + 1 },
+    { header: 'S.No', render: (_, i) => (currentPage - 1) * pageSize + i + 1 },
     { header: 'Medicine Name', accessor: 'name' },
     { header: 'Generic Name', accessor: 'genericName' },
     { header: 'Category', accessor: 'category' },
@@ -176,7 +183,7 @@ export default function MedicineMaster() {
       </div>
 
       <ModuleFilterBar 
-        onSearch={setSearchTerm}
+        onSearch={(val) => { setSearchTerm(val); setCurrentPage(1); }}
         searchValue={searchTerm}
         actions={[
           { label: 'Add New Medicine', icon: Plus, variant: 'primary', onClick: openAddModal }
@@ -184,8 +191,14 @@ export default function MedicineMaster() {
       />
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <DataTable columns={columns} data={filteredMedicines} hover striped />
-        <Pagination totalRecords={filteredMedicines.length} currentPage={1} pageSize={10} onPageChange={() => {}} onPageSizeChange={() => {}} />
+        <DataTable columns={columns} data={paginatedMedicines} hover striped />
+        <Pagination 
+          totalRecords={filteredMedicines.length} 
+          currentPage={currentPage} 
+          pageSize={pageSize} 
+          onPageChange={setCurrentPage} 
+          onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }} 
+        />
       </div>
 
       {/* Add New Medicine Modal */}

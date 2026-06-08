@@ -18,6 +18,18 @@ public interface MedicineStockRepository extends JpaRepository<MedicineStock, Lo
     @Query(value = "SELECT * FROM medicine_stocks WHERE id = :id AND is_deleted = false FOR UPDATE", nativeQuery = true)
     Optional<MedicineStock> findByIdWithLock(@Param("id") Long id);
 
+    @Query("SELECT s.medicine.id, SUM(s.quantityAvailable) FROM MedicineStock s GROUP BY s.medicine.id")
+    List<Object[]> getStockQuantitiesGroupByMedicine();
+
+    @Query("SELECT s.medicine.id, SUM(s.quantityAvailable) FROM MedicineStock s WHERE s.medicine.id IN :medicineIds GROUP BY s.medicine.id")
+    List<Object[]> getStockQuantitiesGroupByMedicineIds(@Param("medicineIds") List<Long> medicineIds);
+
+    @Query("SELECT s FROM MedicineStock s JOIN FETCH s.medicine LEFT JOIN FETCH s.supplier")
+    List<MedicineStock> findAllWithMedicineAndSupplier();
+
+    @Query("SELECT s FROM MedicineStock s JOIN FETCH s.medicine LEFT JOIN FETCH s.supplier WHERE LOWER(s.medicine.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<MedicineStock> findByMedicineNameContainingIgnoreCaseWithMedicineAndSupplier(@Param("name") String name);
+
     List<MedicineStock> findByMedicineNameContainingIgnoreCase(String name);
     List<MedicineStock> findByMedicineId(Long medicineId);
 
